@@ -11,9 +11,8 @@ COPY requirements.txt ./avro/Message.avsc ./
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-RUN python3 -m avro_to_python.cli . .
+RUN python3 -m avro_to_python.cli Message.avsc .
 
-COPY protocol ./protocol
 COPY *.py start.sh ./
 
 CMD ["./start.sh"]
