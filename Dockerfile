@@ -13,7 +13,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 RUN python3 -m avro_to_python.cli . .
 
-COPY protocol protocol
+COPY protocol ./protocol
 COPY *.py start.sh ./
 
 CMD ["./start.sh"]
