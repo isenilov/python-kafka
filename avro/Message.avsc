@@ -1,0 +1,23 @@
+{
+  "namespace": "protocol",
+  "type": "record",
+  "name": "Message",
+  "fields": [
+    {
+      "name": "timestamp",
+      "type": "long",
+      "doc": "POSIX timestamp in UTC"
+    },
+    {
+      "name": "data",
+      "type": ["null", {
+        "name": "Data",
+        "type": "record",
+        "fields": [
+          {"name": "count", "type": ["null", "long"], "default": null},
+          {"name": "value", "type": ["null", "double"], "default": null}
+        ]
+      }]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+confluent-kafka==1.7.0
+fastavro==1.4.7
+avro-to-python==0.3.2
+requests==2.26.0

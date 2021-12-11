@@ -1,0 +1,66 @@
+version: "3.4"
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:6.1.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  schemaregistry:
+    image: confluentinc/cp-schema-registry:6.1.0
+    restart: always
+    depends_on:
+      - zookeeper
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+      SCHEMA_REGISTRY_HOST_NAME: schemaregistry
+      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8085"
+    ports:
+      - "8085:8085"
+
+  kafka:
+    image: confluentinc/cp-kafka:6.1.0
+    depends_on:
+      - zookeeper
+      - schemaregistry
+    restart: always
+    ports:
+      - "39092:39092"
+    environment:
+      # configuration inspired by
+      # https://github.com/confluentinc/demo-scene/blob/e4cae65ccf96d69a381c1c63c2e2b740c0baa687/kafka-ecosystem/docker-compose.yml#L11-L45
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:39092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+
+  init-kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --list --bootstrap-server kafka:29092
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --create --if-not-exists --topic Test.Topic --bootstrap-server kafka:29092 --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics  --list --bootstrap-server kafka:29092
+      "
+  worker:
+    build: .
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      TOPIC_NAME: Test.Topic
