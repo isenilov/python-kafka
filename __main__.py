@@ -19,7 +19,7 @@ schema_registry_client = SchemaRegistryClient({"url": "http://schemaregistry:808
 
 producer_conf = {"bootstrap.servers": KAFKA_BOOTSTRAP_SERVERS,
                  "key.serializer": StringSerializer("utf_8"),
-                 "value.serializer": AvroSerializer(schema_str=Message.schema,
+                 "value.serializer": AvroSerializer(schema_str=Message.schema,  # the schema will be registered in the registry
                                                     schema_registry_client=schema_registry_client,
                                                     to_dict=todict)}
 
@@ -47,7 +47,7 @@ producer.flush()
 
 consumer_conf = {"bootstrap.servers": KAFKA_BOOTSTRAP_SERVERS,
                  "key.deserializer": StringDeserializer("utf_8"),
-                 "value.deserializer": AvroDeserializer(schema_str=Message.schema,
+                 "value.deserializer": AvroDeserializer(schema_str=None,  # the schema should be fetched from the registry
                                                         schema_registry_client=schema_registry_client,
                                                         from_dict=lambda obj, _: Message(obj)),
                  "group.id": "test_group",
