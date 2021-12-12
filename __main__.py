@@ -64,7 +64,7 @@ while True:
 
         message = msg.value()
         if message is not None:
-            print(f"Consumed message {message.dict()}")
+            print(f"Consumed message: {message.dict()}")
     except KeyboardInterrupt:
         break
 
