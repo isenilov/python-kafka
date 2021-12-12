@@ -13,12 +13,13 @@ from protocol.Message import Message
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 TOPIC_NAME = os.getenv("TOPIC_NAME")
 
-
 schema_registry_client = SchemaRegistryClient({"url": "http://schemaregistry:8085"})
 
-producer_conf = {'bootstrap.servers': KAFKA_BOOTSTRAP_SERVERS,
-                 'key.serializer': StringSerializer('utf_8'),
-                 'value.serializer': AvroSerializer(schema_str=Message.schema,
+# --- Producing part ---
+
+producer_conf = {"bootstrap.servers": KAFKA_BOOTSTRAP_SERVERS,
+                 "key.serializer": StringSerializer("utf_8"),
+                 "value.serializer": AvroSerializer(schema_str=Message.schema,
                                                     schema_registry_client=schema_registry_client,
                                                     to_dict=todict)}
 
@@ -39,11 +40,10 @@ producer.produce(topic=TOPIC_NAME,
                  value=msg)
 print(f"Produced message: {msg.dict()}")
 
-
 print("\nFlushing records...")
 producer.flush()
 
-# ----------------
+# --- Consuming part ---
 
 consumer_conf = {"bootstrap.servers": KAFKA_BOOTSTRAP_SERVERS,
                  "key.deserializer": StringDeserializer("utf_8"),
