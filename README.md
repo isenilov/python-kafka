@@ -1,6 +1,7 @@
 # Schemaful Kafka streaming with Python and AVRO
 
-Basic Python AVRO consumer and producer.
+Basic Python AVRO consumer and producer implementation.
+This repository accompanies Article Name
 
 ## Running
 
