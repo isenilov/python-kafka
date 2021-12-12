@@ -1,5 +1,7 @@
 # Schemaful Kafka streaming with Python and AVRO
 
+Basic Python AVRO consumer and producer.
+
 ## Running
 
 Running all the services:
@@ -8,7 +10,7 @@ Running all the services:
 Attaching to the app's logs:
 `docker-compose logs worker -f`
 
-### Compiling AVRO into Python classes
+## Compiling AVRO into Python classes
 
 Compiling AVRO schema `./avro/Messgae.avsc` into Python classes
 is done during building docker image, that is why some imports
