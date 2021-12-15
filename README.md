@@ -1,7 +1,9 @@
 # Schemaful Kafka streaming with Python and AVRO
 
 Basic Python AVRO consumer and producer implementation.
-This repository accompanies Article Name
+
+This repository accompanies
+[Schemafull streaming data processing in ML pipelines](https://towardsdatascience.com/using-kafka-with-avro-in-python-da85b3e0f966) article.
 
 ## Running
 
